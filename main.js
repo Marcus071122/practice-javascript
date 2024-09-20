@@ -1,16 +1,23 @@
-document.querySelector("h1").textContent = "自分の名前"
-document.querySelector("h2").textContent = "ひがしやま"
-//documentとは！！
-/* htmlファイルで書かれてるコードを一つのオブジェクトとしてみなす。*/
+function changeColor(){
 
-//DOM(ドム)
-/* ドキュメントオブジェクトモデル (Document Object Model)の略で、Webページ要素やコンテンツなどをツリー構造で表現したデータモデル */
+document.getElementById("text").style.color = "red";
+}
+//document.getElementById("text").style.color = "red";
+//これは、ドキュメントの中の(text)というIDを持っている
+//タグのスタイルの色を赤にしてください。
+let count = 0;
+function increaseCount(){
+   
+    count++;
+    document.getElementById("counter").innerText = count;
+    if(count>=5){
+        count = 0;
+    }
 
-//上記コードの意味
-//document.querySelector("h1").textContent = "自分の名前"
+}
+function decreaseCount(){
+    count--;
+    document.getElementById("counter").innerText = count;
+}
 
-//ドキュメントの中の("h1")タグを探してね
-//document.querySelector("h1")
 
-//h1タグの中身のtextを変えてね
-//.textContent = "東山眞也"
