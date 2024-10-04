@@ -5,7 +5,7 @@ function errorInput(){
     const month = document.getElementById("month").value;
     const day =document.getElementById("day").value
 
- console.log("month".month.value)
+    console.log("month",month,"day:",day)
 
 
 }
