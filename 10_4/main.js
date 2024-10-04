@@ -8,8 +8,18 @@ if(month <1 ||month>12){
 
 }
     console.log("month",month,"day:",day)
+}
 
-
+constmonthSelect = document.getElementById("month");
+monthSelectList();
+function monthSelectList(){
+    for (let i=1;i<=12;i++){
+        let option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + "月";
+        monthSelect.appendChild(option);
+    }
+    
 }
 
 
