@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シューティングゲーム</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #c5b5dff6; }
+        canvas { display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        // ゲーム設定
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // プレイヤー
+        const playerWidth = 50, playerHeight = 50;
+        let playerX = canvas.width / 2 - playerWidth / 2;
+        let playerY = canvas.height - playerHeight - 10;
+        let playerSpeed = 5;
+        let leftPressed = false, rightPressed = false;
+
+        // 弾
+        let bullets = [];
+        let bulletSpeed = 7;
+
+        // 敵
+        let enemies = [];
+        let enemySpeed = 1;
+        let enemySize = 50;
+        
+        // キー操作
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') leftPressed = true;
+            if (e.key === 'ArrowRight') rightPressed = true;
+            if (e.key === ' ' || e.key === 'Spacebar') shootBullet();
+        });
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft') leftPressed = false;
+            if (e.key === 'ArrowRight') rightPressed = false;
+        });
+
+        // プレイヤーの移動
+        function movePlayer() {
+            if (leftPressed && playerX > 0) playerX -= playerSpeed;
+            if (rightPressed && playerX < canvas.width - playerWidth) playerX += playerSpeed;
+        }
+
+        // 弾を発射
+        function shootBullet() {
+            let bullet = {
+                x: playerX + playerWidth / 2 - 5,
+                y: playerY,
+                width: 10,
+                height: 20,
+                speed: bulletSpeed
+            };
+            bullets.push(bullet);
+        }
+
+        // 弾の移動
+        function moveBullets() {
+            bullets.forEach((bullet, index) => {
+                bullet.y -= bullet.speed;
+                if (bullet.y < 0) bullets.splice(index, 1);
+            });
+        }
+
+        // 敵の生成
+        function spawnEnemies() {
+            if (Math.random() < 0.02) {
+                let enemyX = Math.random() * (canvas.width - enemySize);
+                let enemy = { x: enemyX, y: -enemySize, width: enemySize, height: enemySize };
+                enemies.push(enemy);
+            }
+        }
+
+        // 敵の移動
+        function moveEnemies() {
+            enemies.forEach((enemy, index) => {
+                enemy.y += enemySpeed;
+                if (enemy.y > canvas.height) {
+                    enemies.splice(index, 1);
+                }
+            });
+        }
+
+        // 衝突判定
+        function checkCollisions() {
+            bullets.forEach((bullet, bulletIndex) => {
+                enemies.forEach((enemy, enemyIndex) => {
+                    if (
+                        bullet.x < enemy.x + enemy.width &&
+                        bullet.x + bullet.width > enemy.x &&
+                        bullet.y < enemy.y + enemy.height &&
+                        bullet.y + bullet.height > enemy.y
+                    ) {
+                        enemies.splice(enemyIndex, 1);
+                        bullets.splice(bulletIndex, 1);
+                    }
+                });
+            });
+        }
+
+        // ゲームの描画
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // プレイヤー
+            ctx.fillStyle = 'green';
+            ctx.fillRect(playerX, playerY, playerWidth, playerHeight);
+            
+            // 弾
+            ctx.fillStyle = 'yellow';
+            bullets.forEach(bullet => {
+                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+            });
+
+            // 敵
+            ctx.fillStyle = 'red';
+            enemies.forEach(enemy => {
+                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+            });
+        }
+
+        // ゲームの更新
+        function update() {
+            movePlayer();
+            moveBullets();
+            spawnEnemies();
+            moveEnemies();
+            checkCollisions();
+            draw();
+            requestAnimationFrame(update);
+        }
+
+        // ゲーム開始
+        update();
+    </script>
+</body>
+</html>
